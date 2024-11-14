@@ -167,9 +167,9 @@ app.post('/signup', async (req, res) => {
     }
 
     function isValidPassword(password) {
-      const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-      return passwordRegex.test(password);
-    }
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=\[\]{};:'",.<>?\\|`~])[A-Za-z\d!@#$%^&*()_\-+=\[\]{};:'",.<>?\\|`~]{8,}$/;
+  return passwordRegex.test(password);
+}
 
     if (!isValidPassword(password)) {
       return res.status(400).json({ success: false, message: 'Password does not meet complexity requirements.' });
