@@ -261,9 +261,9 @@ return passwordRegex.test(password);
 
 
 const loginLimiter = rateLimit({
-windowMs: 30 * 60 * 1000, // 30 minutes
+windowMs: 3 * 60 * 1000, // 30 minutes
 max: 100, // Limit each IP to 5 requests per windowMs
-message: 'Too many login attempts, please try again after 30 minutes.',
+message: 'Too many login attempts, please try again after 3 minutes.',
 handler: function (req, res, next, options) {
 res.status(options.statusCode).json({ success: false, message: options.message });
 }
