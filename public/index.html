@@ -308,15 +308,46 @@
 
             // Function to show error message
             function showError(inputId, message) {
-                const errorSpan = document.getElementById(`${inputId}-error`);
+                const errorSpan = document.getElementById(${inputId}-error);
                 errorSpan.textContent = message;
             }
 
             // Function to clear error message
             function clearError(inputId) {
-                const errorSpan = document.getElementById(`${inputId}-error`);
+                const errorSpan = document.getElementById(${inputId}-error);
                 errorSpan.textContent = '';
             }
+
+// Send login data to the server
+    fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, password: password }),
+        credentials: 'include' // Include credentials for session cookies
+    })
+    .then(response => response.json().then(data => {
+        if (!response.ok) {
+            throw new Error(data.message || 'Login failed.');
+        }
+        return data;
+    }))
+    .then(data => {
+        if (data.success) {
+            // Check user role and redirect accordingly
+            if (data.role === 'admin') {
+                window.location.href = '/admin_dashboard.html';
+            } else {
+                window.location.href = '/dashboard.html';
+            }
+        } else {
+            // Display form-level error message
+            document.getElementById('formError').textContent = data.message || 'Incorrect email or password';
+        }
+    })
+    .catch(error => {
+        console.error('Error during login:', error);
+        document.getElementById('formError').textContent = error.message || 'An error occurred during login!';
+    });
         });
     </script>
 </body>
