@@ -160,14 +160,50 @@
             color: yellow;
         }
 
-.sign-up{
-  background-image: url('signupp.jpg'); /* replace with your image URL */
-  background-size: cover; /* scale the image to cover the entire body */
-  background-repeat: no-repeat; /* prevent the image from repeating */
-}.sign-up{display: flex; 
-flex-direction: column;
- justify-content: flex-end;}
+        .sign-up{
+            background-image: url('signupp.jpg'); /* replace with your image URL */
+            background-size: cover; /* scale the image to cover the entire body */
+            background-repeat: no-repeat; /* prevent the image from repeating */
+        }
+        .sign-up {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
 
+        /* Toast Styles */
+        .toast {
+            visibility: hidden;
+            min-width: 250px;
+            margin-left: -125px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 2px;
+            padding: 10px;
+            position: fixed;
+            z-index: 1;
+            left: 50%;
+            bottom: 30px;
+            font-size: 17px;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+        }
+
+        .toast.show {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Style for success message */
+        .toast.success {
+            background-color: #4CAF50;
+        }
+
+        /* Style for error message */
+        .toast.error {
+            background-color: #f44336;
+        }
     </style>
 </head>
 <body>
@@ -201,65 +237,87 @@ flex-direction: column;
             </div>
         </div>
     </div>
- <script>
+    
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script>
         document.addEventListener('DOMContentLoaded', function() {
-  const signInForm = document.querySelector('.sign-in form');
-  const signUpButton = document.querySelector('.sign-up button');
+            const signInForm = document.querySelector('.sign-in form');
+            const signUpButton = document.querySelector('.sign-up button');
 
-  // Add event listeners to forms
-  signInForm.addEventListener('submit', validateSignInForm);
-  signUpButton.addEventListener('click', validateSignUpForm);
+            // Add event listeners to forms
+            signInForm.addEventListener('submit', validateSignInForm);
+            signUpButton.addEventListener('click', validateSignUpForm);
 
-  // Function to validate sign-in form
-  function validateSignInForm(event) {
-    event.preventDefault();
+            // Function to show toast notifications
+            function showToast(message, type) {
+                const toast = document.getElementById('toast');
+                toast.textContent = message;
+                toast.classList.add(type, 'show');
+                
+                // Hide the toast after 3 seconds
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
 
-    const emailInput = document.getElementById('email');
-    const passwordInput = document.getElementById('password');
-    const rememberMeCheckbox = document.getElementById('rememberMe');
+            // Function to validate sign-in form
+            function validateSignInForm(event) {
+                event.preventDefault();
 
-    let isValid = true;
+                const emailInput = document.getElementById('email');
+                const passwordInput = document.getElementById('password');
+                const rememberMeCheckbox = document.getElementById('rememberMe');
 
-    if (emailInput.value.trim() === '') {
-      showError('email', 'Email is required');
-      isValid = false;
-    } else {
-      clearError('email');
-    }
+                let isValid = true;
 
-    if (passwordInput.value.trim() === '') {
-      showError('password', 'Password is required');
-      isValid = false;
-    } else {
-      clearError('password');
-    }
+                // Check for valid email format
+                const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                if (!emailRegex.test(emailInput.value.trim())) {
+                    showToast('Please enter a valid email address.', 'error');
+                    isValid = false;
+                }
 
-    if (isValid) {
-      alert('Sign-in form submitted successfully!');
-      emailInput.value = '';
-      passwordInput.value = '';
-    }
-  }
+                // Check if email is registered (for demo, you can replace with real API call)
+                const registeredEmails = ['user1@example.com', 'user2@example.com']; // Simulated registered emails
+                if (!registeredEmails.includes(emailInput.value.trim())) {
+                    showToast('Email is not registered.', 'error');
+                    isValid = false;
+                }
 
-  // Function to validate sign-up form
-  function validateSignUpForm() {
-    alert('Sign-up!');
-    window.location.href = 'signup.html';
-  }
+                // Check for password
+                if (passwordInput.value.trim() === '') {
+                    showToast('Password is required.', 'error');
+                    isValid = false;
+                }
 
-  // Function to show error message
-  function showError(inputId, message) {
-    const errorSpan = document.getElementById(`${inputId}-error`);
-    errorSpan.textContent = message;
-  }
+                // If valid, show success toast
+                if (isValid) {
+                    showToast('Sign-in form submitted successfully!', 'success');
+                    emailInput.value = '';
+                    passwordInput.value = '';
+                }
+            }
 
-  // Function to clear error message
-  function clearError(inputId) {
-    const errorSpan = document.getElementById(`${inputId}-error`);
-    errorSpan.textContent = '';
-  }
-});
+            // Function to validate sign-up form
+            function validateSignUpForm() {
+                showToast('Sign-up! Redirecting...', 'success');
+                window.location.href = 'signup.html';
+            }
+
+            // Function to show error message
+            function showError(inputId, message) {
+                const errorSpan = document.getElementById(`${inputId}-error`);
+                errorSpan.textContent = message;
+            }
+
+            // Function to clear error message
+            function clearError(inputId) {
+                const errorSpan = document.getElementById(`${inputId}-error`);
+                errorSpan.textContent = '';
+            }
+        });
     </script>
-    <script src="login.js"></script>
 </body>
 </html>
