@@ -242,113 +242,113 @@
     <div id="toast" class="toast"></div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const signInForm = document.querySelector('.sign-in form');
-            const signUpButton = document.querySelector('.sign-up button');
+    document.addEventListener('DOMContentLoaded', function() {
+        const signInForm = document.querySelector('.sign-in form');
+        const signUpButton = document.querySelector('.sign-up button');
 
-            // Add event listeners to forms
-            signInForm.addEventListener('submit', validateSignInForm);
-            signUpButton.addEventListener('click', validateSignUpForm);
+        // Add event listeners to forms
+        signInForm.addEventListener('submit', validateSignInForm);
+        signUpButton.addEventListener('click', validateSignUpForm);
 
-            // Function to show toast notifications
-            function showToast(message, type) {
-                const toast = document.getElementById('toast');
-                toast.textContent = message;
-                toast.classList.add(type, 'show');
-                
-                // Hide the toast after 3 seconds
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                }, 3000);
-            }
-
-            // Function to validate sign-in form
-            function validateSignInForm(event) {
-                event.preventDefault();
-
-                const emailInput = document.getElementById('email');
-                const passwordInput = document.getElementById('password');
-                const rememberMeCheckbox = document.getElementById('rememberMe');
-
-                let isValid = true;
-
-                // Check for valid email format
-                const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-                if (!emailRegex.test(emailInput.value.trim())) {
-                    showToast('Please enter a valid email address.', 'error');
-                    isValid = false;
-                }
-
-                // Check if email is registered (for demo, you can replace with real API call)
-               // const registeredEmails = ['user1@example.com', 'user2@example.com']; // Simulated registered emails
-               // if (!registeredEmails.includes(emailInput.value.trim())) {
-                  //  showToast('Email is not registered.', 'error');
-                   // isValid = false;
-              //  }
-
-                // Check for password
-                if (passwordInput.value.trim() === '') {
-                    showToast('Password is required.', 'error');
-                    isValid = false;
-                }
-
-                // If valid, show success toast
-                if (isValid) {
-                    showToast('Sign-in form submitted successfully!', 'success');
-                    emailInput.value = '';
-                    passwordInput.value = '';
-                }
-            }
-
-            // Function to validate sign-up form
-            function validateSignUpForm() {
-                showToast('Sign-up! Redirecting...', 'success');
-                window.location.href = 'signup.html';
-            }
-
-            // Function to show error message
-            function showError(inputId, message) {
-                const errorSpan = document.getElementById(${inputId}-error);
-                errorSpan.textContent = message;
-            }
-
-            // Function to clear error message
-            function clearError(inputId) {
-                const errorSpan = document.getElementById(${inputId}-error);
-                errorSpan.textContent = '';
-            }
-
-// Send login data to the server
-    fetch('/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email, password: password }),
-        credentials: 'include' // Include credentials for session cookies
-    })
-    .then(response => response.json().then(data => {
-        if (!response.ok) {
-            throw new Error(data.message || 'Login failed.');
+        // Function to show toast notifications
+        function showToast(message, type) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add(type, 'show');
+            
+            // Hide the toast after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
         }
-        return data;
-    }))
-    .then(data => {
-        if (data.success) {
-            // Check user role and redirect accordingly
-            if (data.role === 'admin') {
-                window.location.href = '/admin_dashboard.html';
-            } else {
-                window.location.href = '/dashboard.html';
+
+        // Function to validate sign-in form
+        function validateSignInForm(event) {
+            event.preventDefault();
+
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const rememberMeCheckbox = document.getElementById('rememberMe');
+
+            let isValid = true;
+
+            // Check for valid email format
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            if (!emailRegex.test(emailInput.value.trim())) {
+                showToast('Please enter a valid email address.', 'error');
+                isValid = false;
             }
-        } else {
-            // Display form-level error message
-            document.getElementById('formError').textContent = data.message || 'Incorrect email or password';
+
+            // Check if email is registered (for demo, you can replace with real API call)
+            // const registeredEmails = ['user1@example.com', 'user2@example.com']; // Simulated registered emails
+            // if (!registeredEmails.includes(emailInput.value.trim())) {
+            //     showToast('Email is not registered.', 'error');
+            //     isValid = false;
+            // }
+
+            // Check for password
+            if (passwordInput.value.trim() === '') {
+                showToast('Password is required.', 'error');
+                isValid = false;
+            }
+
+            // If valid, show success toast
+            if (isValid) {
+                // Send login data to the server
+                const email = emailInput.value.trim();
+                const password = passwordInput.value.trim();
+
+                fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password }),
+                    credentials: 'include' // Include credentials for session cookies
+                })
+                .then(response => response.json().then(data => {
+                    if (!response.ok) {
+                        throw new Error(data.message || 'Login failed.');
+                    }
+                    return data;
+                }))
+                .then(data => {
+                    if (data.success) {
+                        // Check user role and redirect accordingly
+                        if (data.role === 'admin') {
+                            window.location.href = '/admin_dashboard.html';
+                        } else {
+                            window.location.href = '/dashboard.html';
+                        }
+                    } else {
+                        // Display form-level error message
+                        document.getElementById('formError').textContent = data.message || 'Incorrect email or password';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error during login:', error);
+                    document.getElementById('formError').textContent = error.message || 'An error occurred during login!';
+                });
+            }
         }
-    })
-    .catch(error => {
-        console.error('Error during login:', error);
-        document.getElementById('formError').textContent = error.message || 'An error occurred during login!';
+
+        // Function to validate sign-up form
+        function validateSignUpForm() {
+            showToast('Sign-up! Redirecting...', 'success');
+            window.location.href = 'signup.html';
+        }
+
+        // Function to show error message
+        function showError(inputId, message) {
+            const errorSpan = document.getElementById(`${inputId}-error`);
+            errorSpan.textContent = message;
+        }
+
+        // Function to clear error message
+        function clearError(inputId) {
+            const errorSpan = document.getElementById(`${inputId}-error`);
+            errorSpan.textContent = '';
+        }
     });
-        });
-    </script>
+</script>
+
 </body>
 </html>
