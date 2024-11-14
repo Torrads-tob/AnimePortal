@@ -282,9 +282,9 @@ return res.status(400).json({ success: false, message: 'Invalid email format.' }
 }
 // Fetch user
 const user = await usersCollection.findOne({ emaildb: email });
-if (!user) {
-return res.status(400).json({ success: false, message: 'Invalid email or password.' });
-}
+        if (!user) {
+            return res.status(400).json({ success: false, message: 'Invalid email or password.' });
+        }
 // Account lockout check
 if (user.accountLockedUntil && user.accountLockedUntil > new Date()) {
 const remainingTime = Math.ceil((user.accountLockedUntil - new Date()) / 6000);
