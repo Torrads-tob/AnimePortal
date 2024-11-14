@@ -299,7 +299,7 @@ let invalidAttempts = (user.invalidLoginAttempts || 0) + 1;
 let updateFields = { invalidLoginAttempts: invalidAttempts };
 if (invalidAttempts >= 3) {
 // Lock account
-updateFields.accountLockedUntil = new Date(Date.now() + 30 * 60 *
+updateFields.accountLockedUntil = new Date(Date.now() + 3* 60 *
 
 1000);
 
